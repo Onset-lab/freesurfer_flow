@@ -1,59 +1,47 @@
-# FreeSurfer pipeline
-===================
+# Freesurfer-Flow
 
-Run the FreeSurfer recon-all pipeline and create the customize freesurfer,
-brainnetome and glasser connectivity atlas in native space.
+Run the FastSurfer recon-all pipeline and generate customized FreeSurfer, Brainnetome, and Glasser connectivity atlases in native space.
 
-If you use this pipeline, please cite:
+## Citation
 
-```
-Fischl, Bruce. "FreeSurfer." Neuroimage 62.2 (2012)
-https://dx.doi.org/10.1016%2Fj.neuroimage.2012.01.021
+If you use this pipeline, please cite the following works:
 
-Kurtzer GM, Sochat V, Bauer MW Singularity: Scientific containers for
-mobility of compute. PLoS ONE 12(5): e0177459 (2017)
-https://doi.org/10.1371/journal.pone.0177459
+- **FastSurfer**:  
+    Henschel, Leonie, et al. "Fastsurfer-a fast and accurate deep learning-based neuroimaging pipeline." *NeuroImage* 219 (2020).  
+    [https://doi.org/10.1016/j.neuroimage.2020.117012](https://doi.org/10.1016/j.neuroimage.2020.117012)
 
-P. Di Tommaso, et al. Nextflow enables reproducible computational workflows.
-Nature Biotechnology 35, 316–319 (2017) https://doi.org/10.1038/nbt.3820
-```
+- **FreeSurfer**:  
+    Fischl, Bruce. "FreeSurfer." *NeuroImage* 62.2 (2012).  
+    [https://dx.doi.org/10.1016%2Fj.neuroimage.2012.01.021](https://dx.doi.org/10.1016%2Fj.neuroimage.2012.01.021)
 
-Requirements
-------------
+- **Singularity**:  
+    Kurtzer GM, Sochat V, Bauer MW. "Singularity: Scientific containers for mobility of compute." *PLoS ONE* 12(5): e0177459 (2017).  
+    [https://doi.org/10.1371/journal.pone.0177459](https://doi.org/10.1371/journal.pone.0177459)
 
-- [Nextflow](https://www.nextflow.io)
-- [FreeSurfer](https://surfer.nmr.mgh.harvard.edu/)
-- [scilpy](https://github.com/scilus/scilpy)
+- **Nextflow**:  
+    P. Di Tommaso, et al. "Nextflow enables reproducible computational workflows." *Nature Biotechnology* 35, 316–319 (2017).  
+    [https://doi.org/10.1038/nbt.3820](https://doi.org/10.1038/nbt.3820)
 
+## Containerized Execution
 
-Singularity/Docker
------------
-If you are on Linux, we recommend using the Singularity to run tractometry_flow pipeline.
-If you have Apptainer (Singularity), launch your Nextflow command with:
-`-with-singularity ABSOLUTE_PATH/scilus-freesurfer-2.1.0.sif`
+### Docker
+To run with Docker, use the Docker profile:  
+`-profile docker`
 
-Image is available [here](http://scil.dinf.usherbrooke.ca/en/containers_list/scilus-freesurfe_2.1.0.sif)
+### Singularity
+To run with Singularity, use the Singularity profile:  
+`-profile singularity`
 
-If you are on MacOS or Windows, we recommend using the Docker container to run tractometry_flow pipeline.
-Launch your Nextflow command with:
-`-with-docker scilus/scilus-freesurfer:2.1.0`
+### Apptainer
+To run with Apptainer, use the Apptainer profile:  
+`-profile apptainer`
 
-:warning: WARNING :warning:
----------
-The official release 2.1.0 is **NOT** available now.
+## GPU Support
 
-Please, either build the singularity container using this command:
+To enable GPU acceleration for the FastSurfer module, use the GPU profile. For example, with Docker:  
+`-profile docker,use_gpu`
 
-`singularity build scilus-freesurfer-dev.sif docker://scilus/scilus-freesurfer:dev` 
+## Usage
 
-and then launch your Nextflow command with:
-`-with-singularity ABSOLUTE_PATH/scilus-freesurfer_dev.sif`
-
-Or launch your Nextflow command with docker:
-`-with-docker scilus/scilus-freesurfer:dev`
-
-
-Usage
------
-
-See *USAGE* or run `nextflow run main.nf --help`
+Refer to the **USAGE** section or run the following command for detailed help:  
+`nextflow run main.nf --help`
