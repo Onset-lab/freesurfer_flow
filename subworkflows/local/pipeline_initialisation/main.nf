@@ -32,8 +32,6 @@ workflow.onComplete {
     log.info "Execution duration: $workflow.duration"
 }
 
-include { DCM2BIDS } from '../../../modules/local/dcm2bids/main.nf'
-
 workflow PIPELINE_INITIALISATION {
 
     take:
