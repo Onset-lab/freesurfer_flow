@@ -22,8 +22,7 @@ process FASTSURFER {
         def SUBJECTS_DIR = "${prefix}_fastsurfer"
     """
     mkdir ${prefix}_fastsurfer/
-    $FASTSURFER_HOME/run_fastsurfer.sh  --allow_root \
-                                        --sd \$(realpath ${SUBJECTS_DIR}) \
+    $FASTSURFER_HOME/run_fastsurfer.sh  --sd \$(realpath ${SUBJECTS_DIR}) \
                                         --fs_license \$(realpath $fs_license) \
                                         --t1 \$(realpath ${anat}) \
                                         --sid ${prefix} \
