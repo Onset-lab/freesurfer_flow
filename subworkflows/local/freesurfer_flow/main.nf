@@ -14,7 +14,8 @@ workflow FREESURFER_FLOW {
 
     ch_versions = Channel.empty()
 
-    FASTSURFER( t1, fs_license )
+    ch_fastsurfer = t1.combine(fs_license)
+    FASTSURFER( ch_fastsurfer )
     ch_versions = ch_versions.mix(FASTSURFER.out.versions.first())
 
     ch_fs_output = fs_output.concat(FASTSURFER.out.fastsurferdirectory)

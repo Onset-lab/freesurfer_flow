@@ -4,8 +4,7 @@ process FASTSURFER {
     container "${ 'deepmi/fastsurfer:cuda-v2.4.2' }"
 
     input:
-        tuple val(meta), path(anat)
-        path(fs_license)
+        tuple val(meta), path(anat), path(fs_license)
 
     output:
         tuple val(meta), path("*_fastsurfer")    , emit: fastsurferdirectory
