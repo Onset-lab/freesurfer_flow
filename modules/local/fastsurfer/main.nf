@@ -7,7 +7,7 @@ process FASTSURFER {
         tuple val(meta), path(anat), path(fs_license)
 
     output:
-        tuple val(meta), path("*_fastsurfer")    , emit: fastsurferdirectory
+        tuple val(meta), path("*_fastsurfer/*")    , emit: fastsurferdirectory
         path "versions.yml"                      , emit: versions
 
     when:
