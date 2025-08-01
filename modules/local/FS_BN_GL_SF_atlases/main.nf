@@ -1,7 +1,7 @@
 process FS_BN_GL_SF_ATLASES {
     tag "$meta.id"
 
-    container "${ 'scilus/scilus-freesurfer:2.1.0' }"
+    container "${ 'scilus/scilus-freesurfer:dev' }"
 
     input:
         tuple val(meta), path(folder)
