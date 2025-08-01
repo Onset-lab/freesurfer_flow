@@ -20,7 +20,7 @@ process FS_BN_GL_SF_ATLASES {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     ln -s $task.ext.atlas_utils_folder/fsaverage \$(dirname ${folder})/
-    bash $task.ext.atlas_utils_folder/freesurfer_utils/generate_atlas_FS_BN_GL_SF_v5.sh \$(dirname ${folder}) ${prefix} ${params.nb_threads} FS_BN_GL_SF_Atlas/
+    bash $task.ext.atlas_utils_folder/freesurfer_utils/generate_atlas_FS_BN_GL_SF_v5.sh \$(dirname ${folder}) ${prefix} ${task.cpus} FS_BN_GL_SF_Atlas/
 
     cp $prefix/FS_BN_GL_SF_Atlas/* ./
 
