@@ -1,7 +1,7 @@
 process FS_BN_GL_SF_ATLASES {
     tag "$meta.id"
 
-    container "${ 'onsetlab/freesurfer-flow:dev' }"
+    container "${ 'onsetlab/freesurfer-flow:1.0.0' }"
 
     input:
         tuple val(meta), path(folder)
