@@ -17,7 +17,6 @@ process FASTSURFER {
     script:
         def prefix = task.ext.prefix ?: "${meta.id}"
         def acq3T = task.ext.acq3T ? "--3T" : ""
-        def seg_only = task.ext.seg_only ? "--seg_only" : ""
         def FASTSURFER_HOME = "/fastsurfer"
         def SUBJECTS_DIR = "${prefix}_fastsurfer"
     """
@@ -30,7 +29,7 @@ process FASTSURFER {
                                         --py python3 --parallel \
                                         --threads ${task.cpus} \
                                         --fsaparc \
-                                        ${acq3T} ${seg_only}
+                                        ${acq3T}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

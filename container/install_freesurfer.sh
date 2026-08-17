@@ -100,7 +100,6 @@ function run_parallel ()
 # get FreeSurfer and unpack (some of it)
 echo "Downloading FS and unpacking portions ..."
 wget --no-check-certificate -qO- $fslink  | tar zxv --no-same-owner -C $where \
-      --exclude='freesurfer/average/*.gca' \
       --exclude='freesurfer/average/Buckner_JNeurophysiol11_MNI152' \
       --exclude='freesurfer/average/Choi_JNeurophysiol12_MNI152' \
       --exclude='freesurfer/average/mult-comp-cor' \
@@ -205,6 +204,7 @@ copy_files="
   average/rh.DKaparc.atlas.acfb40.noaparc.i12.2016-08-02.gcs
   average/rh.DKTaparc.atlas.acfb40.noaparc.i12.2016-08-02.gcs
   average/rh.folding.atlas.acfb40.noaparc.i12.2016-08-02.tif
+  average/RB_all_2019_10_25.talxfm.mni305.gca
   bin/analyzeto4dfp
   bin/AntsDenoiseImageFs
   bin/asegstats2table

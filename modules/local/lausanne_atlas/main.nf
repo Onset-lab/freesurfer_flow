@@ -1,7 +1,7 @@
 process LAUSANNE_ATLAS {
     tag "$meta.id"
 
-    container "${ 'scilus/scilus-freesurfer:dev' }"
+    container "${ 'onsetlab/freesurfer-flow:dev' }"
 
     input:
         tuple val(meta), path(folder)

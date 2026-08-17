@@ -1,9 +1,9 @@
 
 def logoHeader(){
     // Log colors ANSI codes
-    c_reset = "\033[0m";
-    c_dim = "\033[2m";
-    c_blue = "\033[0;34m";
+    def c_reset = "\033[0m";
+    def c_dim = "\033[2m";
+    def c_blue = "\033[0;34m";
 
     return """
     ${c_dim}-----------------------------------${c_reset}
@@ -16,22 +16,6 @@ def logoHeader(){
     ${c_dim}------------------------------------${c_reset}
     """.stripIndent()
 }
-
-log.info logoHeader()
-
-log.info "\033[0;33m ${workflow.manifest.name} \033[0m"
-log.info "  ${workflow.manifest.description}"
-log.info "  Version: ${workflow.manifest.version}"
-log.info "  Github: ${workflow.manifest.homePage}"
-log.info " "
-
-workflow.onComplete {
-    log.info " "
-    log.info "Pipeline completed at: $workflow.complete"
-    log.info "Execution status: ${ workflow.success ? 'OK' : 'failed' }"
-    log.info "Execution duration: $workflow.duration"
-}
-
 workflow PIPELINE_INITIALISATION {
 
     take:
@@ -41,6 +25,13 @@ workflow PIPELINE_INITIALISATION {
     outdir          // path
 
     main:
+
+    log.info logoHeader()
+    log.info "\033[0;33m ${workflow.manifest.name} \033[0m"
+    log.info "  ${workflow.manifest.description}"
+    log.info "  Version: ${workflow.manifest.version}"
+    log.info "  Github: ${workflow.manifest.homePage}"
+    log.info " "
 
     if (fs_input) {
         t1_channel = Channel.fromPath("$fs_input/**/*t1.nii.gz")

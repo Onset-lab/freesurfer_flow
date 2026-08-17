@@ -1,5 +1,5 @@
 ARG FREESURFER_BUILD_IMAGE=ubuntu:22.04
-ARG SCILPY_BASE_IMAGE=scilus/scilpy:dev
+ARG SCILPY_BASE_IMAGE=scilus/scilpy:2.1.0
 
 # Create a stage to build the freesurfer image (only essential scripts).
 FROM $FREESURFER_BUILD_IMAGE AS build_freesurfer
@@ -52,18 +52,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       wget \
       curl \
       time \
-      tcsh && \
+      tcsh \
+      parallel && \
     apt clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Installing Parallel
-# Installing dependencies.
-RUN (wget -O - pi.dk/3 || curl pi.dk/3/) | bash
 RUN echo 'will cite' | parallel --citation 1> /dev/null 2> /dev/null &
-RUN rm parallel*.tar.bz2*
 
 # Add FreeSurfer and python Environment variables
 # DO_NOT_SEARCH_FS_LICENSE_IN_FREESURFER_HOME=true deactivates the search for FS_LICENSE in FREESURFER_HOME
+ENV PYTHONPATH=""
 ENV OS=Linux \
     FS_OVERRIDE=0 \
     FIX_VERTEX_AREA="" \
@@ -77,6 +75,11 @@ ENV OS=Linux \
     MPLCONFIGDIR=/tmp/matplotlib-config \
     DO_NOT_SEARCH_FS_LICENSE_IN_FREESURFER_HOME="true"
 
+# generate_atlas_FS_BN_GL_SF_v5.sh invokes python3.7 explicitly; point it at the
+# venv's python (with dipy/nibabel/scilpy already installed) rather than a real
+# Python 3.7, which scilpy 2.1.0 (requires >=3.9) couldn't run anyway.
+RUN ln -s "$(command -v python3)" /usr/local/bin/python3.7
+
 COPY --from=build_freesurfer /opt/freesurfer /opt/freesurfer
 
 RUN wget -O /FS_BN_GL_SF_utils.tar "https://www.dropbox.com/s/zzptxby9pf5lpih/FS_BN_GL_SF_utils.tar?dl=0?download=1"
@@ -84,3 +87,17 @@ RUN wget -O /opt/freesurfer/.license "https://www.dropbox.com/s/zs4k3bcfxderj58/
 
 RUN ["tar", "xf", "/FS_BN_GL_SF_utils.tar"]
 RUN ["rm", "/FS_BN_GL_SF_utils.tar"]
+
+# generate_atlas_FS_BN_GL_SF_v5.sh still calls scilpy with a CLI that scilpy
+# 2.1.0 removed: `-v <vol> <id>` for scil_combine_labels.py now collides with
+# the `-v/--verbosity` flag, and `--label_to_dilate` was renamed (plural) in
+# scil_dilate_labels.py. Patch both so the atlas outputs actually get built.
+RUN sed -i \
+      -e 's/ -v / --volume_ids /g' \
+      -e 's/--label_to_dilate/--labels_to_dilate/g' \
+      /FS_BN_GL_SF_utils/freesurfer_utils/generate_atlas_FS_BN_GL_SF_v5.sh
+
+RUN mkdir -p /Yale_atlas_utils && \
+    wget -O /Yale_atlas_utils/YBA_696_LH_fsaverage.annot "https://raw.githubusercontent.com/YaleBrainAtlas/YaleBrainAtlas/master/data/YBA_696parcels/YBA_696_LH_fsaverage.annot" && \
+    wget -O /Yale_atlas_utils/YBA_696_RH_fsaverage.annot "https://raw.githubusercontent.com/YaleBrainAtlas/YaleBrainAtlas/master/data/YBA_696parcels/YBA_696_RH_fsaverage.annot" && \
+    wget -O /Yale_atlas_utils/YBA_696_LUT.txt "https://raw.githubusercontent.com/YaleBrainAtlas/YaleBrainAtlas/master/data/YBA_696parcels/YBA_696_LUT.txt"
