@@ -61,9 +61,14 @@ process YALE_ATLAS {
 
     scil_volume_math.py addition lh_yale.nii.gz rh_yale.nii.gz \$other_files yale_atlas.nii.gz --data_type int16 -f
 
-    mri_convert ${folder}/mri/rawavg.mgz rawavg.nii.gz
-    scil_volume_reslice_to_reference.py yale_atlas.nii.gz rawavg.nii.gz yale_atlas.nii.gz --interpolation nearest -f
+    mri_convert ${folder}/mri/brainmask.mgz brain_mask.nii.gz
+    scil_volume_math.py lower_threshold brain_mask.nii.gz 0.001 brain_mask.nii.gz --data_type uint8 -f
+    scil_volume_reslice_to_reference.py brain_mask.nii.gz orig.nii.gz brain_mask.nii.gz --interpolation nearest -f
+
+    mri_convert ${folder}/mri/orig/001.mgz orig.nii.gz
+    scil_volume_reslice_to_reference.py yale_atlas.nii.gz orig.nii.gz yale_atlas.nii.gz --interpolation nearest -f
     scil_volume_math.py convert yale_atlas.nii.gz yale_atlas.nii.gz --data_type int16 -f
+    scil_labels_dilate.py yale_atlas.nii.gz yale_atlas_dilate.nii.gz --distance 2 --mask brain_mask.nii.gz
 
     cp $task.ext.atlas_utils_folder/YBA_696_LUT.txt ./yale_atlas_LUT.txt
     awk -v ids="\$subcortical_ids" 'BEGIN{n=split(ids,a," "); for(i=1;i<=n;i++) newid[a[i]]=696+i}

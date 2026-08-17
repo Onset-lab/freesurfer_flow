@@ -47,6 +47,11 @@ process FS_BN_GL_SF_ATLASES {
 
     cp $prefix/FS_BN_GL_SF_Atlas/* ./
 
+    mri_convert ${folder}/mri/orig/001.mgz orig.nii.gz
+    for f in atlas_*.nii.gz; do
+        scil_volume_reslice_to_reference.py "\$f" orig.nii.gz "\$f" --interpolation nearest -f
+    done
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         scilpy: 2.1.0

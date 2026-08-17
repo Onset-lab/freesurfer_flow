@@ -25,9 +25,11 @@ process LAUSANNE_ATLAS {
     freesurfer_home=\$(dirname \$(dirname \$(which mri_label2vol)))
     python3.10 $task.ext.atlas_utils_folder/lausanne_multi_scale_atlas/generate_multiscale_parcellation.py \$(dirname ${folder}) ${prefix} \$freesurfer_home --scale ${scale} --dilation_factor 0 --log_level DEBUG
 
-    mri_convert ${folder}/mri/rawavg.mgz rawavg.nii.gz
-    scil_volume_math.py lower_threshold rawavg.nii.gz 0.001 mask.nii.gz --data_type uint8
-    scil_volume_reslice_to_reference.py ${folder}/mri/lausanne2008.scale${scale}+aseg.nii.gz mask.nii.gz lausanne_2008_scale_${scale}.nii.gz --interpolation nearest
+    mri_convert ${folder}/mri/orig/001.mgz orig.nii.gz
+    mri_convert ${folder}/mri/brainmask.mgz brainmask.nii.gz
+    scil_volume_math.py lower_threshold brain_mask.nii.gz 0.001 brain_mask.nii.gz --data_type uint8 -f
+    scil_volume_reslice_to_reference.py brainmask.nii.gz orig.nii.gz mask.nii.gz --interpolation nearest
+    scil_volume_reslice_to_reference.py ${folder}/mri/lausanne2008.scale${scale}+aseg.nii.gz orig.nii.gz lausanne_2008_scale_${scale}.nii.gz --interpolation nearest
     scil_volume_math.py convert lausanne_2008_scale_${scale}.nii.gz lausanne_2008_scale_${scale}.nii.gz --data_type int16 -f
     scil_labels_dilate.py lausanne_2008_scale_${scale}.nii.gz lausanne_2008_scale_${scale}_dilate.nii.gz --distance 2 --mask mask.nii.gz
     
