@@ -1,6 +1,5 @@
 process FASTSURFER {
     tag "$meta.id"
-    maxForks 1
 
     container "${ 'deepmi/fastsurfer:cuda-v2.4.2' }"
 
