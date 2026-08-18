@@ -18,6 +18,7 @@ process YALE_ATLAS {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
+    export OMP_NUM_THREADS=${task.cpus}
     export SUBJECTS_DIR=\$(dirname ${folder})
     ln -sf /FS_BN_GL_SF_utils/fsaverage \$SUBJECTS_DIR/
 
@@ -61,11 +62,12 @@ process YALE_ATLAS {
 
     scil_volume_math.py addition lh_yale.nii.gz rh_yale.nii.gz \$other_files yale_atlas.nii.gz --data_type int16 -f
 
+    mri_convert ${folder}/mri/orig/001.mgz orig.nii.gz
     mri_convert ${folder}/mri/brainmask.mgz brain_mask.nii.gz
     scil_volume_math.py lower_threshold brain_mask.nii.gz 0.001 brain_mask.nii.gz --data_type uint8 -f
     scil_volume_reslice_to_reference.py brain_mask.nii.gz orig.nii.gz brain_mask.nii.gz --interpolation nearest -f
+    scil_volume_math.py convert brain_mask.nii.gz brain_mask.nii.gz --data_type uint8 -f
 
-    mri_convert ${folder}/mri/orig/001.mgz orig.nii.gz
     scil_volume_reslice_to_reference.py yale_atlas.nii.gz orig.nii.gz yale_atlas.nii.gz --interpolation nearest -f
     scil_volume_math.py convert yale_atlas.nii.gz yale_atlas.nii.gz --data_type int16 -f
     scil_labels_dilate.py yale_atlas.nii.gz yale_atlas_dilate.nii.gz --distance 2 --mask brain_mask.nii.gz

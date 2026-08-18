@@ -18,6 +18,7 @@ process LOBE_ATLAS {
 
     script:
     """
+    export OMP_NUM_THREADS=${task.cpus}
     mri_convert ${folder}/mri/orig/001.mgz orig.nii.gz
 
     mri_convert ${folder}/mri/wmparc.mgz wmparc.nii.gz
