@@ -44,11 +44,11 @@ workflow PIPELINE_INITIALISATION {
         fs_channel = Channel.empty()
     }
     else if (fs_output) {
-        fs_channel = Channel.fromPath("$fs_output", type:"dir")
+        fs_channel = Channel.fromPath("$fs_output/*/", type:"dir")
                         .map{ch1 ->
                             def fmeta = [:]
                             // Set meta.id
-                            fmeta.id = ch1.parent.name
+                            fmeta.id = ch1.name
                             [fmeta, ch1]
                             }
         t1_channel = Channel.empty()
